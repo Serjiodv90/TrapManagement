@@ -2,8 +2,10 @@ package ftp;
 
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 
-
+import org.apache.catalina.authenticator.SpnegoAuthenticator.AcceptAction;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -11,6 +13,12 @@ import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.mina.core.service.IoAcceptor;
+import org.apache.mina.core.service.IoConnector;
+import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.filter.codec.ProtocolCodecFilter;
+import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
+import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 
 
@@ -49,9 +57,27 @@ public class Main {
 		FtpUploadDownloadUtilTest.startFtpServer();
 		System.out.println("server is up!");
 		System.out.println("Test the server:");
-		FtpUploadDownloadUtilTest.testFtp();
+//		listenToFtp();
+		
+//		FtpUploadDownloadUtilTest.testFtp();
 //		FtpUploadDownloadUtilTest.close();
 
+	}
+	
+	
+	public static void listenToFtp() throws IOException
+	{
+		IoAcceptor acceptor = new NioSocketAcceptor();
+		acceptor.getSessionConfig().setReadBufferSize(2048);
+		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
+		
+		acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+		
+		acceptor.setHandler(new FtpServerHandler());
+		
+		acceptor.bind(new InetSocketAddress(FtpUploadDownloadUtilTest.FTP_PORT));
+		
+		acceptor.bind();
 	}
 	
 	

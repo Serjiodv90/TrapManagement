@@ -9,9 +9,11 @@ import java.io.*;
 import java.util.*;
 import org.apache.ftpserver.*;
 import org.apache.ftpserver.ftplet.*;
+import org.apache.ftpserver.listener.Listener;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.*;
 import org.apache.ftpserver.usermanager.impl.*;
+import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttribute;
 
 
 /**
@@ -33,6 +35,9 @@ public class FtpTestUtil {
 	 * @param ftpUsersPropsFile can be null, or eg "target / FtpUsers.properties"
 	 * @param maxLogins maximum number of logins (0 for default value)
 	 */ 
+	
+	private static Listener listener;
+	
 	public static FtpServer createFtpServer (int ftpPort, String ftpHomeDir, String readUserName, String readUserPwd, String writeUserName, String writeUserPwd) throws FtpException, IOException
 	{
 		return createFtpServer (ftpPort, ftpHomeDir, readUserName, readUserPwd, writeUserName, writeUserPwd, null, 0);
@@ -51,12 +56,14 @@ public class FtpTestUtil {
 			String readUserName, String readUserPwd, String writeUserName, String writeUserPwd,
 			String ftpUsersPropsFile, int maxLogins, int maxIdleTimeSec) throws FtpException, IOException
 	{
+		
 		File fhd = new File (ftpHomeDir);
 		if (!fhd.exists ())
 			fhd.mkdirs ();
 
 		ListenerFactory listenerFactory = new ListenerFactory ();
 		listenerFactory.setPort (ftpPort);
+		
 
 		PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory ();
 		userManagerFactory.setPasswordEncryptor (new SaltedPasswordEncryptor ());
@@ -78,19 +85,24 @@ public class FtpTestUtil {
 		userWr.setName (writeUserName);
 		userWr.setPassword (writeUserPwd);
 		userWr.setHomeDirectory (ftpHomeDir);
+		
 		if (maxIdleTimeSec > 0) {
 			userRd.setMaxIdleTime (maxIdleTimeSec);
 			userWr.setMaxIdleTime (maxIdleTimeSec);
 		}
+		
 		List <Authority> authorities = new ArrayList <Authority> ();
 		authorities.add (new WritePermission ());
 		userWr.setAuthorities (authorities);
+		
 		userManager.save (userRd);
 		userManager.save (userWr);
 
 		FtpServerFactory serverFactory = new FtpServerFactory ();
-		serverFactory.addListener ("default", listenerFactory.createListener ());
+		listener = listenerFactory.createListener ();
+		serverFactory.addListener ("default", listener);
 		serverFactory.setUserManager (userManager);
+		
 		
 		if (maxLogins > 0) {
 			ConnectionConfigFactory ccf = new ConnectionConfigFactory ();
@@ -98,7 +110,15 @@ public class FtpTestUtil {
 			serverFactory.setConnectionConfig (ccf.createConnectionConfig ());
 		}
 		
+		
+		
+		serverFactory.setFtplets(Collections.singletonMap("MyFtpLet", new HoneyFtpLet()));
+		
 		return serverFactory.createServer ();
+	}
+	
+	public static Listener getListener() {
+		return listener;
 	}
 
 

@@ -1,5 +1,6 @@
 package ftp;
 
+import java.awt.image.ImagingOpException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,6 +44,8 @@ public class FtpUploadDownloadUtil {
    public static boolean download (String localResultFile, String remoteSourceFile,
          String host, int port, String usr, String pwd, boolean showMessages) throws IOException
    {
+	   
+	   System.out.println("User: " +usr+",  trying to download!!");
 	  FTPClient ftpClient = new FTPClient ();
       FileOutputStream fos = null;
       boolean resultOk = true;
@@ -92,6 +95,21 @@ public class FtpUploadDownloadUtil {
       }
 
       return resultOk;
+   }
+   
+   public static String connectToFtp(String host, int port, String usr, String pwd) {
+	   
+	   FTPClient client = new FTPClient();
+	   boolean result = true;
+	   
+	   try {
+		   client.connect(host, port);
+		   result &= client.login(usr, pwd);
+	   } catch (IOException e) {
+		e.printStackTrace();
+	}
+	   
+	   return client.getReplyString();
    }
    
 }

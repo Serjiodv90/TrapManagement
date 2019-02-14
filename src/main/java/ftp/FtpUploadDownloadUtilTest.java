@@ -2,18 +2,45 @@ package ftp;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+
 import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.FtpSession;
+import org.apache.ftpserver.impl.DefaultFtpHandler;
+import org.apache.ftpserver.impl.DefaultFtpServerContext;
+import org.apache.ftpserver.impl.FtpHandler;
+import org.apache.ftpserver.impl.FtpIoSession;
+import org.apache.ftpserver.impl.FtpServerContext;
+import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.listener.nio.FtpHandlerAdapter;
+import org.apache.ftpserver.listener.nio.FtpLoggingFilter;
+import org.apache.mina.core.service.IoAcceptor;
+import org.apache.mina.core.service.IoHandler;
+import org.apache.mina.core.service.IoServiceListener;
+import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.filter.codec.ProtocolCodecFilter;
+import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
+import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.springframework.util.concurrent.ListenableFuture;
+
+import ch.qos.logback.core.net.LoginAuthenticator;
 
 
 
 public class FtpUploadDownloadUtilTest {
 
 	
-	private static final int FTP_PORT = 21;//2121;
-	   private static final String FTP_HOST = "localhost";
+	public static final int FTP_PORT = /*21;*/21;
+	   public static final String FTP_HOST = "localhost";
 	   private static final String FTP_HOME_DIR = "target/FtpHome";
 	   private static final String FTPUSERSPROPS_FILE = "target/FtpUsers.properties";
 	   private static final String READ_USER_NAME = "ReadUserName";
@@ -27,8 +54,47 @@ public class FtpUploadDownloadUtilTest {
 	   {
 		   ftpServer = FtpTestUtil.createFtpServer (FTP_PORT, FTP_HOME_DIR,
 	            READ_USER_NAME, READ_USER_PWD, WRITE_USER_NAME, WRITE_USER_PWD, FTPUSERSPROPS_FILE, 0);
-		   ftpServer.start ();
+		   ftpServer.start();
+//		   FtpSession
+//		   
+//		   
+//		   
+//		   
+//		   
+//		   
+		   /*
+		    * FTP
+		    * FTPCmd
+		    * DefaultFtpServerContext
+		    * DefaultMessageResource
+		    * DefaultFtpHandler
+		    */
+		   
+		   
+		   
+//		   IoAcceptor acceptor = new NioSocketAcceptor();
+//			acceptor.getSessionConfig().setReadBufferSize(2048);
+//			acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
+//			
+//			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+//			
+//			ListenerFactory lf = new ListenerFactory();
+//			FtpHandler handler = new DefaultFtpHandler();
+//			FtpServerContext context = new DefaultFtpServerContext();
+//			
+//			handler.init(context, FtpTestUtil.getListener()/*lf.createListener()*/);
+//			
+//			acceptor.setHandler(new FtpHandlerAdapter(context, handler));
+//
+//			acceptor.bind(new InetSocketAddress(21));
+//
+//			acceptor.bind();
+//		   
+
+			
+			
 	   }
+	   
 	   
 //	   @AfterClass
 	   public static void stoppFtpServer ()
@@ -44,7 +110,7 @@ public class FtpUploadDownloadUtilTest {
 //	   @Test
 	   public static void testFtp () throws IOException
 	   {
-	      final String LOCAL_SRC_FILE = "TestSrc.txt";
+	      final String LOCAL_SRC_FILE = "TestSrc.txt"; 
 	      final String LOCAL_DST_FILE = "target/TestDst.txt";
 	      final String REMOTE_FILE = "Test.txt";
 
@@ -53,8 +119,9 @@ public class FtpUploadDownloadUtilTest {
 	    	  testFile.createNewFile ();
 
 	      // upload attempt without write permission must fail: 
-	      FtpUploadDownloadUtil.upload(LOCAL_SRC_FILE, REMOTE_FILE, FTP_HOST, FTP_PORT,
+	      boolean uploadSucc = FtpUploadDownloadUtil.upload(LOCAL_SRC_FILE, REMOTE_FILE, FTP_HOST, FTP_PORT,
 	            READ_USER_NAME, READ_USER_PWD, false);
+	      System.out.println("Did upload succeeded? " + uploadSucc);
 
 	      // Test upload with write permission: 
 	      FtpUploadDownloadUtil.upload(LOCAL_SRC_FILE, REMOTE_FILE, FTP_HOST, FTP_PORT,
