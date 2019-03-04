@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package trapManagementServer.ftp.model;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ import org.hibernate.validator.internal.util.privilegedactions.GetAnnotationAttr
  * {@link " http://www.jarvana.com/jarvana/view/org/apache/ftpserver/ftpserver-core/1.0.6/ftpserver-core-1.0.6-javadoc.jar!/org/apache/ ftpserver / FtpServer.html "}
  */ 
 
-public class FtpTestUtil {
+public class HoneyFtpConfigure {
 
 
 	/**
@@ -117,9 +117,6 @@ public class FtpTestUtil {
 		return serverFactory.createServer ();
 	}
 	
-	public static Listener getListener() {
-		return listener;
-	}
 
 
 

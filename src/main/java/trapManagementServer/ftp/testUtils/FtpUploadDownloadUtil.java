@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package trapManagementServer.ftp.testUtils;
 
 import java.awt.image.ImagingOpException;
 import java.io.FileInputStream;

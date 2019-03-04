@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package trapManagementServer.ftp.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpRequest;
 import org.apache.ftpserver.ftplet.FtpSession;
 import org.apache.ftpserver.ftplet.FtpletResult;
+
+import trapManagementServer.ftp.logging.FtpLoggerManager;
 
 //http://javadox.com/org.apache.ftpserver/ftplet-api/1.0.5/org/apache/ftpserver/ftplet/package-summary.html
 

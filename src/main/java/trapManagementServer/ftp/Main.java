@@ -20,6 +20,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
+import TrapManagementServerTests.ftpTests.FtpUploadDownloadUtilTest;
+
 
 
 
@@ -65,20 +67,7 @@ public class Main {
 	}
 	
 	
-	public static void listenToFtp() throws IOException
-	{
-		IoAcceptor acceptor = new NioSocketAcceptor();
-		acceptor.getSessionConfig().setReadBufferSize(2048);
-		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-		
-		acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
-		
-		acceptor.setHandler(new FtpServerHandler());
-		
-		acceptor.bind(new InetSocketAddress(FtpUploadDownloadUtilTest.FTP_PORT));
-		
-		acceptor.bind();
-	}
+	
 	
 	
 

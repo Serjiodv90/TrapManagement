@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package trapManagementServer.ftp.model;
 
 public enum HoneyFtpCommands {
 	USER("USER", "User name: "),

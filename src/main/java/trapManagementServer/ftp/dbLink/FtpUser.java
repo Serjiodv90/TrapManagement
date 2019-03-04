@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package trapManagementServer.ftp.dbLink;
 
 
 /*

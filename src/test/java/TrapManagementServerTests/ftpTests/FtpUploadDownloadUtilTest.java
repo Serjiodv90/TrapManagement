@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package TrapManagementServerTests.ftpTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +33,8 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import ch.qos.logback.core.net.LoginAuthenticator;
+import trapManagementServer.ftp.model.HoneyFtpConfigure;
+import trapManagementServer.ftp.testUtils.FtpUploadDownloadUtil;
 
 
 
@@ -52,7 +54,7 @@ public class FtpUploadDownloadUtilTest {
 //	   @BeforeClass
 	   public static void startFtpServer () throws FtpException, IOException
 	   {
-		   ftpServer = FtpTestUtil.createFtpServer (FTP_PORT, FTP_HOME_DIR,
+		   ftpServer = HoneyFtpConfigure.createFtpServer (FTP_PORT, FTP_HOME_DIR,
 	            READ_USER_NAME, READ_USER_PWD, WRITE_USER_NAME, WRITE_USER_PWD, FTPUSERSPROPS_FILE, 0);
 		   ftpServer.start();
 //		   FtpSession

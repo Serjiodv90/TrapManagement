@@ -1,4 +1,4 @@
-package trapManagementServer.ftp;
+package trapManagementServer.ftp.logging;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
